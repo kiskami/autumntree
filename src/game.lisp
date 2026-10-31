@@ -20,7 +20,14 @@
 (defun main (&optional args)
   (declare (ignore args))
   (let ((screen-width 1280)
-	(screen-height 1024))
+	(screen-height 1024)
+	(color-skyblue (raylib:make-color :r 102 :g 191 :b 255 :a 255))
+	(color-brown (raylib:make-color :r 127 :g 106 :b 79 :a 255))
+	(color-dark-brown (raylib:make-color :r 76 :g 63 :b 47 :a 255))
+	(color-raywhite (raylib:make-color :r 245 :g 245 :b 245 :a 255))
+	(color-green (raylib:make-color :r 0 :g 228 :b 48 :a 255))
+	(color-gray (raylib:make-color :r 130 :g 130 :b 130 :a 255))
+	(color-dark-gray (raylib:make-color :r 80 :g 80 :b 80 :a 255)))
     (raylib:with-window ("Autumn Tree" (screen-width screen-height))
       (let* ((screen-center (raylib:make-vector2
 			     :x (/ screen-width 2.0)
@@ -31,7 +38,10 @@
 		      :rotation 0.0
 		      :zoom 1.0))
 	     ;; (camera-target (raylib:camera-2d-target camera))
-	     (faded-sky-blue (raylib:fade raylib:+skyblue+ 0.5))
+	     (faded-sky-blue
+	       (raylib:fade color-skyblue 0.5)
+;	       raylib:+skyblue+
+	       )
 
 	     (fontsize 12)
 	     (border 30)
@@ -41,9 +51,9 @@
 	     (ground-height (floor (/ draw-height 6.0)))
 	     (sky-height (- screen-height ground-height border border border))
 
-	     (ground-color raylib:+brown+)
+	     (ground-color color-brown)
 	     (sky-color faded-sky-blue)
-	     (trunk-color raylib:+darkbrown+))
+	     (trunk-color color-dark-brown))
 	
 	(raylib:set-target-fps 30)	; conservative value
 	(loop :until (raylib:window-should-close)
@@ -62,7 +72,7 @@
 		 (let ((mousepos (raylib:get-mouse-position)))
 		   		   
 		   (raylib:with-drawing
-		     (raylib:clear-background raylib:+raywhite+)
+		     (raylib:clear-background color-raywhite)
 		     (draw-ground border (- draw-height ground-height) ground-height draw-width ground-color)
 		     (draw-sky border sky-height draw-width sky-color)
 
@@ -75,14 +85,14 @@
 					      trunk-color)
 
 		     (unless (raylib:is-cursor-hidden)
-		       (raylib:draw-circle-v mousepos 5.0 raylib:+green+)
+		       (raylib:draw-circle-v mousepos 5.0 color-green)
 		       (raylib:draw-text (format nil "(~a ~a)"
 						 (raylib:vector2-x mousepos)
 						 (raylib:vector2-y mousepos))
 					 halfborder
 					 halfborder
 					 fontsize
-					 raylib:+gray+))
+					 color-gray))
 		     
 		     (print-info (floor (raylib:vector2-x screen-center))
 				 (- screen-height border (floor (/ ground-height 2)) border border)
@@ -92,7 +102,7 @@
 				       halfborder
 				       (- screen-height halfborder (/ fontsize 2))
 				       fontsize
-				       raylib:+darkgray+)
+				       color-dark-gray)
 		     ))
 	      )				; loop
 	) 
@@ -130,18 +140,19 @@
   )
 
 (defun print-info (x y fontsize)
-  (let ((lh 30))
+  (let ((lh 30)
+	(color-white (raylib:make-color :r 255 :g 255 :b 255 :a 255)))
     (raylib:draw-text "Poke the leaves with left mouse button"
 		      (- x 95) y
 		      fontsize
-		      raylib:+white+)
+		      color-white)
     (raylib:draw-text "Zoom with mousewheel, reset with 'r'"
 		      (- x 85) (+ y lh)
 		      fontsize
-		      raylib:+white+)
+		      color-white)
 	
     (raylib:draw-text "Exit with 'ESC'"
 		      (- x 55) (+ y lh lh)
 		      fontsize
-		      raylib:+white+))
+		      color-white))
 )
