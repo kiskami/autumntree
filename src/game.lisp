@@ -53,30 +53,47 @@
 		 (when (raylib:is-key-pressed #.(foreign-enum-value 'raylib:keyboard-key :r))
                    (setf (raylib:camera-2d-zoom camera) 1.0
 			 (raylib:camera-2d-rotation camera) 0.0))
-		 
-		 (raylib:with-drawing
-		   (raylib:clear-background raylib:+raywhite+)
-		   (draw-ground border (- draw-height ground-height) ground-height draw-width ground-color)
-		   (draw-sky border sky-height draw-width sky-color)
 
-		   (draw-trunk-and-branches border
-					    (- draw-width border border)
-					    (- sky-height border)
-					    ground-height
-					    screen-width
-					    screen-height
-					    trunk-color)
+		 (when (raylib:is-key-pressed #. (foreign-enum-value 'raylib:keyboard-key :h))
+		   (if (raylib:is-cursor-hidden)
+		       (raylib:show-cursor)
+		       (raylib:hide-cursor)))
 
-		   (print-info (floor (raylib:vector2-x screen-center))
-			       (- screen-height border (floor (/ ground-height 2)) border border)
-			       fontsize)
+		 (let ((mousepos (raylib:get-mouse-position)))
+		   		   
+		   (raylib:with-drawing
+		     (raylib:clear-background raylib:+raywhite+)
+		     (draw-ground border (- draw-height ground-height) ground-height draw-width ground-color)
+		     (draw-sky border sky-height draw-width sky-color)
 
-		   (raylib:draw-text "Autumn Tree - Copyright (c) 2026 kiskami"
-				     halfborder
-				     (- screen-height halfborder (/ fontsize 2))
-				     fontsize
-				     raylib:+darkgray+)
-		   )
+		     (draw-trunk-and-branches border
+					      (- draw-width border border)
+					      (- sky-height border)
+					      ground-height
+					      screen-width
+					      screen-height
+					      trunk-color)
+
+		     (unless (raylib:is-cursor-hidden)
+		       (raylib:draw-circle-v mousepos 5.0 raylib:+green+)
+		       (raylib:draw-text (format nil "(~a ~a)"
+						 (raylib:vector2-x mousepos)
+						 (raylib:vector2-y mousepos))
+					 halfborder
+					 halfborder
+					 fontsize
+					 raylib:+gray+))
+		     
+		     (print-info (floor (raylib:vector2-x screen-center))
+				 (- screen-height border (floor (/ ground-height 2)) border border)
+				 fontsize)
+
+		     (raylib:draw-text "Autumn Tree - Copyright (c) 2026 kiskami"
+				       halfborder
+				       (- screen-height halfborder (/ fontsize 2))
+				       fontsize
+				       raylib:+darkgray+)
+		     ))
 	      )				; loop
 	) 
       )
