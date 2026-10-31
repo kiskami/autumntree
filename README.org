@@ -1,0 +1,52 @@
+#+TITLE: Autumntree
+#+AUTHOR: kiskami
+
+My entry for the Autumn Lisp Game Jam 2026
+(https://itch.io/jam/autumn-lisp-game-jam-2026)
+
+This is a simple game, where you poke the leaves on a tree.
+
+
+* How to load, run (and modify)
+
+This project is developed with:
+- SBCL - https://www.sbcl.org/
+- Raylib - https://www.raylib.com/index.html
+- claw-raylib - https://github.com/bohonghuang/claw-raylib
+
+** Installing the dependencies
+
+1. Install *Raylib 5.5* on your OS
+2. Get claw-raylib and build it (The *prebuild 5.5* branch
+   helps)
+   - Get and install deps for quicklisp as local projects:
+     *cffi-object, cffi-ops*
+   - You'll have to install the compiled adapter libs to the
+     appropriate location according to your OS - most likely
+     the same place where your Raylib libs reside and can be
+     loaded by the game/sbcl.
+3. Get this source and configure as quicklisp local project
+
+** Running
+
+Load it with asdf or quicklisp and run the ~main~ function:
+#+begin_src
+  CL-USER> (asdf:load-system :autumntree)
+  ...
+  T
+  CL-USER> (autumntree:main)
+#+end_src
+   
+* License
+
+Copyright (c) 2026 kiskami, Zalaegerszeg, Hungary
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
