@@ -11,6 +11,10 @@
 		:foreign-enum-value)
   (:import-from :autumntree.util
 		:trapezlocal)
+  (:import-from :autumntree.branches
+		:prep-branches)
+  (:import-from :autumntree.leaves
+		:prep-leaves)
   (:export :main))
 
 (in-package :autumntree)
@@ -112,33 +116,8 @@
       )
     ))
 
-(defun prep-branches (border tree-width tree-height ground-height screen-width screen-height)
-  (let* ((result '())
-	 (base-x (floor (/ screen-width 2.0)))
-	 (base-y (floor (- screen-height ground-height border border)))
-	 (trunk-width (floor (/ tree-width 15.0)))
-	 (half-trwidth (floor (/ trunk-width 2.0)))
-	 (trunk-height (floor (/ tree-height 3.0))))
-    (push (list :rec
-		(- base-x half-trwidth)
-		(- base-y trunk-height)
-		trunk-width
-		trunk-height)
-	  result)
-    (push (list :trapez
-		(coerce base-x 'single-float)
-		(coerce (- base-y trunk-height) 'single-float)
-		(coerce (- trunk-width 40) 'single-float)
-		(coerce trunk-width 'single-float)
-		(coerce (floor (/ trunk-height 2.0)) 'single-float)
-		(coerce (* raylib:+deg2rad+ -85) 'single-float))
-	  result)
-    result))
-
-(defun prep-leaves (basex basey width height)
-  )
-
 (defun draw-trunk-and-branches (branches color)
+;  (break)
   (dolist (b branches)
     (cond
       ((equal (first b) :rec)

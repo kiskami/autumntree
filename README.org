@@ -6,8 +6,7 @@ My entry for the Autumn Lisp Game Jam 2026
 
 This is a simple game, where you poke the leaves on a tree.
 
-
-* How to load, run (and modify)
+* How to load and run in SBCL
 
 This project is developed with:
 - SBCL - https://www.sbcl.org/
@@ -21,6 +20,7 @@ This project is developed with:
    helps)
    - Get and install deps for quicklisp as local projects:
      *cffi-object, cffi-ops*
+   - Install claw-raylib as local quicklisp project
    - You'll have to install the compiled adapter libs to the
      appropriate location according to your OS - most likely
      the same place where your Raylib libs reside and can be
