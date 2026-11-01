@@ -67,6 +67,7 @@
 	     (trunk-color color-dark-brown))
 	
 	(raylib:set-target-fps 30)	; conservative value
+	(raylib:hide-cursor)
 	(loop :until (raylib:window-should-close)
 	      :do
 		 (incf (raylib:camera-2d-zoom camera) (* (raylib:get-mouse-wheel-move) 0.05))
@@ -81,7 +82,6 @@
 		       (raylib:hide-cursor)))
 
 		 (let ((mousepos (raylib:get-mouse-position)))
-		   		   
 		   (raylib:with-drawing
 		     (raylib:clear-background color-raywhite)
 		     (draw-ground border (- draw-height ground-height) ground-height draw-width ground-color)
