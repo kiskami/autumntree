@@ -128,7 +128,24 @@
 	   (coerce (* raylib:+deg2rad+ -75) 'single-float)
 	   )
 
-     
+     ;; third left side branch
+     (list :trapez
+	   (coerce (- base-x (* trunk-width 0.2)) 'single-float)
+	   (coerce (- base-y trunk-height (* trunk-height 0.45) ) 'single-float)
+	   (coerce (/ trunk-width 30) 'single-float)
+	   (coerce (/ trunk-width 10) 'single-float)
+	   (coerce (floor (/ trunk-height 3)) 'single-float)
+	   (coerce (* raylib:+deg2rad+ -40) 'single-float)
+	   )
+     (list :trapez
+	   (coerce (- base-x (* trunk-width 0.54)) 'single-float)
+	   (coerce (- base-y trunk-height (* trunk-height 0.65) ) 'single-float)
+	   (coerce (/ trunk-width 50) 'single-float)
+	   (coerce (/ trunk-width 30) 'single-float)
+	   (coerce (floor (/ trunk-height 5.0)) 'single-float)
+	   (coerce (* raylib:+deg2rad+ -30) 'single-float)
+	   )
+	   
      ;; first right side branch
      (list :trapez
 	   (coerce (+ base-x (* trunk-width 0.6)) 'single-float)
@@ -147,6 +164,56 @@
 	   (coerce (* raylib:+deg2rad+ 110) 'single-float)
 	   )
 
-     
-     )
+     ;; second right side branch
+     (list :trapez
+	   (coerce (+ base-x (* trunk-width 0.4)) 'single-float)
+	   (coerce (- base-y trunk-height (* trunk-height 0.15) ) 'single-float)
+	   (coerce (/ trunk-width 25) 'single-float)
+	   (coerce (/ trunk-width 15) 'single-float)
+	   (coerce (floor (/ trunk-height 3.0)) 'single-float)
+	   (coerce (* raylib:+deg2rad+ 60) 'single-float)
+	   )
+     (list :trapez
+	   (coerce (+ base-x (* trunk-width 1.0)) 'single-float)
+	   (coerce (- base-y trunk-height (* trunk-height 0.24) ) 'single-float)
+	   (coerce (/ trunk-width 40) 'single-float)
+	   (coerce (/ trunk-width 20) 'single-float)
+	   (coerce (floor (/ trunk-height 3.7)) 'single-float)
+	   (coerce (* raylib:+deg2rad+ 85) 'single-float)
+	   )
+
+     ;; third right side branch
+     (list :trapez
+	   (coerce (+ base-x (* trunk-width 0.45)) 'single-float)
+	   (coerce (- base-y trunk-height (* trunk-height 0.5) ) 'single-float)
+	   (coerce (/ trunk-width 18) 'single-float)
+	   (coerce (/ trunk-width 10) 'single-float)
+	   (coerce (floor (/ trunk-height 2.0)) 'single-float)
+	   (coerce (* raylib:+deg2rad+ 50) 'single-float)
+	   )
+     (list :trapez
+	   (coerce (+ base-x (* trunk-width 1.35)) 'single-float)
+	   (coerce (- base-y trunk-height (* trunk-height 0.78) ) 'single-float)
+	   (coerce (/ trunk-width 25) 'single-float)
+	   (coerce (/ trunk-width 18) 'single-float)
+	   (coerce (floor (/ trunk-height 2.0)) 'single-float)
+	   (coerce (* raylib:+deg2rad+ 60) 'single-float)
+	   )
+
+     (list :trapez
+	   (coerce (+ base-x (* trunk-width 1.2)) 'single-float)
+	   (coerce (- base-y trunk-height (* trunk-height 0.6) ) 'single-float)
+	   (coerce (/ trunk-width 40) 'single-float)
+	   (coerce (/ trunk-width 20) 'single-float)
+	   (coerce (floor (/ trunk-height 3.0)) 'single-float)
+	   (coerce (* raylib:+deg2rad+ 100) 'single-float)
+	   )
+     (list :trapez
+	   (coerce (+ base-x (* trunk-width 1.6)) 'single-float)
+	   (coerce (- base-y trunk-height (* trunk-height -0.02) ) 'single-float)
+	   (coerce (/ trunk-width 40) 'single-float)
+	   (coerce (/ trunk-width 20) 'single-float)
+	   (coerce (floor (/ trunk-height 4.0)) 'single-float)
+	   (coerce (* raylib:+deg2rad+ 65) 'single-float)
+	   ))
     ))
