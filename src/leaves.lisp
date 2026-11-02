@@ -34,7 +34,7 @@
   (state :created)
   )
 
-(defun prep-leaves (canopy-x canopy-y canopy-width canopy-height count)
+(defun prep-leaves (canopy-x canopy-y canopy-width canopy-height count halfx)
   (let* ((width (/ canopy-width 25.0))
 	 (height (/ canopy-height 20.0))
 	 (result '()))
@@ -43,11 +43,17 @@
      (make-leave :centerX canopy-x :centerY (+ canopy-y 50) :width width :height height)
      result)
     (dotimes (i count)
-      (push
-       (make-leave :centerX (+ canopy-x (random canopy-width))
-		   :centerY (+ canopy-y (random canopy-height))
-		   :width width
-		   :height height)
-       result))
+      (let ((x (+ canopy-x (random canopy-width)))
+	    (angle (coerce (* raylib:+deg2rad+ (random 35)) 'single-float)))
+	(push
+	 (make-leave :centerX x
+		     :centerY (+ canopy-y (random canopy-height))
+		     :width width
+		     :height height
+		     :rot (if (> x halfx)
+			      angle
+			      (* -1 angle))
+		     )
+	 result)))
     result))
 

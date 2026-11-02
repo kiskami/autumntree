@@ -32,7 +32,7 @@
 	   (coerce base-x 'single-float)
 	   (coerce (- base-y (/ trunk-height 2.0) -10) 'single-float)
 	   (coerce (/ trunk-width 2.5) 'single-float)
-	   (coerce trunk-width 'single-float)
+	   (coerce (* trunk-width 0.8) 'single-float)
 	   (coerce trunk-height 'single-float)
 	   (coerce (* raylib:+deg2rad+ -5) 'single-float)
 	   )
@@ -215,5 +215,57 @@
 	   (coerce (/ trunk-width 20) 'single-float)
 	   (coerce (floor (/ trunk-height 4.0)) 'single-float)
 	   (coerce (* raylib:+deg2rad+ 65) 'single-float)
-	   ))
+	   )
+
+     ;; rectangles for leaves regions left
+     (list :rec
+	   (floor (- base-x (* trunk-width 3.8)))
+	   (floor (- base-y trunk-height (* trunk-height 0.15)))
+	   (floor (* trunk-width 3.7))
+	   (floor (/ trunk-height 3))
+	   )
+     (list :rec
+	   (floor (- base-x (* trunk-width 3.1)))
+	   (floor (- base-y trunk-height (* trunk-height 0.55)))
+	   (floor (* trunk-width 3))
+	   (floor (/ trunk-height 3))
+	   )
+     (list :rec
+	   (floor (- base-x (* trunk-width 2.6)))
+	   (floor (- base-y trunk-height (* trunk-height 0.95)))
+	   (floor (* trunk-width 2.4))
+	   (floor (/ trunk-height 3.2))
+	   )
+
+     ;; top
+          (list :rec
+	   (floor (- base-x (* trunk-width 0.8)))
+	   (floor (- base-y trunk-height (* trunk-height 1.05)))
+	   (floor (* trunk-width 2.8))
+	   (floor (/ trunk-height 4))
+	   )
+
+     ;; recs right
+     (list :rec
+	   (floor (+ base-x (* trunk-width -0.1)))
+	   (floor (- base-y trunk-height (* trunk-height 0.1)))
+	   (floor (* trunk-width 2.35))
+	   (floor (/ trunk-height 3))
+	   )
+     (list :rec
+	   (floor (+ base-x (* trunk-width 0.1)))
+	   (floor (- base-y trunk-height (* trunk-height 0.4)))
+	   (floor (* trunk-width 1.8))
+	   (floor (/ trunk-height 4))
+	   )
+     (list :rec
+	   (floor (+ base-x (* trunk-width -0.1)))
+	   (floor (- base-y trunk-height (* trunk-height 0.8)))
+	   (floor (* trunk-width 2.35))
+	   (floor (/ trunk-height 3))
+	   )
+
+
+     
+     )    
     ))

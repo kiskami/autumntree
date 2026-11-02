@@ -28,6 +28,7 @@
 	 (color-brown (raylib:make-color :r 127 :g 106 :b 79 :a 255))
 	 (color-dark-brown (raylib:make-color :r 76 :g 63 :b 47 :a 255))
 	 (color-raywhite (raylib:make-color :r 245 :g 245 :b 245 :a 255))
+	 (color-white (raylib:make-color :r 255 :g 255 :b 255 :a 255))
 	 (color-green (raylib:make-color :r 0 :g 228 :b 48 :a 255))
 	 (color-gray (raylib:make-color :r 130 :g 130 :b 130 :a 255))
 	 (color-dark-gray (raylib:make-color :r 80 :g 80 :b 80 :a 255))
@@ -47,12 +48,12 @@
 				  ground-height
 				  screen-width
 				  screen-height))
-	 (leaves (prep-leaves (/ (- screen-width tree-width) 2.0)
-			      (coerce border 'single-float)
-			      (coerce tree-width 'single-float) 
-			      (/ tree-height 2.0)
-			      100
-			      )))
+	 (leaves (prep-leaves (/ (- screen-width (* tree-width 0.8)) 2.0)
+			      (coerce (+ border halfborder) 'single-float)
+			      (coerce (* tree-width 0.87) 'single-float) 
+			      (/ tree-height 1.5)
+			      400
+			      (/ screen-width 2))))
     
     (raylib:with-window ("Autumn Tree" (screen-width screen-height))
       (let* ((screen-center (raylib:make-vector2
@@ -70,7 +71,8 @@
 
 	     (ground-color color-brown)
 	     (sky-color faded-sky-blue)
-	     (trunk-color color-dark-brown))
+	     (trunk-color color-dark-brown)
+	     (text-color color-white))
 	
 	(raylib:set-target-fps 30)	; conservative value
 	(raylib:hide-cursor)
@@ -105,17 +107,24 @@
 					 halfborder
 					 halfborder
 					 fontsize
+					 color-gray)
+		       (raylib:draw-text (format nil "fps: ~a"
+						 (raylib:get-fps))
+					 (/ screen-width 2)
+					 halfborder
+					 fontsize
 					 color-gray))
 		     
 		     (print-info (floor (raylib:vector2-x screen-center))
 				 (- screen-height border (floor (/ ground-height 2)) border border)
-				 fontsize)
+				 fontsize
+				 text-color)
 
 		     (raylib:draw-text "Autumn Tree - Copyright (c) 2026 kiskami"
 				       halfborder
 				       (- screen-height halfborder (/ fontsize 2))
 				       fontsize
-				       color-dark-gray)
+				       color-dark-gray))
 		     ))
 	      )				; loop
 	) 
@@ -127,10 +136,10 @@
   (dolist (b branches)
     (cond
       ((equal (first b) :rec)
-       (raylib:draw-rectangle (second b) (third b) (fourth b) (fifth b) color))
+       (raylib:draw-rectangle-lines (second b) (third b) (fourth b) (fifth b) (raylib:make-color :r 0 :g 228 :b 48 :a 255)))
       ((equal (first b) :trapez)
        (trapezlocal (second b) (third b) (fourth b) (fifth b) (sixth b) color (seventh b)))))
-  )
+)
 
 (defun draw-leaves (leaves)
   (dolist (l leaves)
@@ -152,20 +161,20 @@
   (raylib:draw-rectangle b b dw sh c)
   )
 
-(defun print-info (x y fontsize)
-  (let ((lh 30)
-	(color-white (raylib:make-color :r 255 :g 255 :b 255 :a 255)))
+(defun print-info (x y fontsize c)
+  ;; (break)
+  (let ((lh 30))
     (raylib:draw-text "Poke the leaves with left mouse button"
 		      (- x 95) y
 		      fontsize
-		      color-white)
-    (raylib:draw-text "Zoom with mousewheel, reset with 'r'"
-		      (- x 85) (+ y lh)
-		      fontsize
-		      color-white)
+		      c)
+  ;; (raylib:draw-text "Zoom with mousewheel, reset with 'r'"
+  ;; 		      (- x 85) (+ y lh)
+  ;; 		      fontsize
+  ;; 		      c)
 	
     (raylib:draw-text "Exit with 'ESC'"
-		      (- x 55) (+ y lh lh)
+		      (- x 25) (+ y lh lh)
 		      fontsize
-		      color-white))
-)
+		      c)
+    ))
