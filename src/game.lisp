@@ -10,10 +10,11 @@
   (:import-from :cffi
 		:foreign-enum-value)
   (:import-from :autumntree.util
-		:trapezlocal)
+		:trapezlocal
+		:deltoidlocal)
   (:import-from :autumntree.branches
 		:prep-branches)
-  (:import-from :autumntree.leaves
+  (:import-from :leaves
 		:prep-leaves)
   (:export :main))
 
@@ -46,7 +47,12 @@
 				  ground-height
 				  screen-width
 				  screen-height))
-	(leaves (prep-leaves nil nil nil nil)))
+	 (leaves (prep-leaves (/ (- screen-width tree-width) 2.0)
+			      (coerce border 'single-float)
+			      (coerce tree-width 'single-float) 
+			      (/ tree-height 2.0)
+			      100
+			      )))
     
     (raylib:with-window ("Autumn Tree" (screen-width screen-height))
       (let* ((screen-center (raylib:make-vector2
@@ -126,7 +132,17 @@
        (trapezlocal (second b) (third b) (fourth b) (fifth b) (sixth b) color (seventh b)))))
   )
 
-(defun draw-leaves (leaves))
+(defun draw-leaves (leaves)
+  (dolist (l leaves)
+    ;; centerx centery width height color &optional (rot 0.0)
+    (deltoidlocal
+     (leaves:leave-centerX l)
+     (leaves:leave-centerY l)
+     (leaves:leave-width l)
+     (leaves:leave-height l)
+     (leaves:leave-color l)
+     (leaves:leave-rot l)
+     )))
 
 (defun draw-ground (b y gh dw c)
   (raylib:draw-rectangle b y dw (+ b gh) c)

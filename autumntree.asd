@@ -7,7 +7,9 @@
   :depends-on ("claw-raylib" "claw-raylib.rlgl")
   :components ((:module "src"
 			:components ((:file "game"
-				      :depends-on ("util" "branches" "leaves"))
+				      :depends-on ("util"
+						   "branches"
+						   "leaves"))
 				     (:file "branches")
 				     (:file "leaves")
 				     (:file "util")))))

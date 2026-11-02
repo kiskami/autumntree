@@ -7,9 +7,10 @@
 (in-package :cl-user)
 (defpackage autumntree.util
   (:use :cl)
-  (:import-from :cffi
-		:foreign-enum-value)
-  (:export :trapezlocal))
+  (:nicknames "util")
+  ;; (:import-from :cffi
+  ;; 		:foreign-enum-value)
+  (:export :trapezlocal :deltoidlocal))
 
 (in-package :autumntree.util)
 
@@ -47,3 +48,21 @@
     (raylib:draw-triangle v1r v2r v3r color)
     )
   )
+
+(defun deltoidlocal (centerx centery width height color &optional (rot 0.0))
+  (declare (single-float centerx centery width height rot))
+  (let* ((center (raylib:make-vector2 :x centerX :y centerY))
+	 (halfW (/ width 2.0))
+	 (halfH (/ height 2.0))
+	 (v0 (raylib:make-vector2 :x (- centerX halfW) :y centerY))
+	 (v1 (raylib:make-vector2 :x centerX :y (- centerY halfH)))
+	 (v2 (raylib:make-vector2 :x (+ centerX halfW) :y centerY))
+	 (v3 (raylib:make-vector2 :x centerX :y (+ centerY halfH)))
+	 (v0r (rotate-point v0 center rot))
+	 (v1r (rotate-point v1 center rot))
+	 (v2r (rotate-point v2 center rot))
+	 (v3r (rotate-point v3 center rot))
+	 (color-black (raylib:make-color :r 0 :g 0 :b 0 :a 255)))
+    (raylib:draw-circle-v center 3.0 color-black)
+    (raylib:draw-triangle v1r v0r v2r color)
+    (raylib:draw-triangle v2r v0r v3r color)))
