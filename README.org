@@ -6,6 +6,9 @@ My entry for the Autumn Lisp Game Jam 2026
 
 This is a simple game, where you poke the leaves on a tree.
 
+Please see the itch.io page for status, devlog and screenshots:
+https://kiskami.itch.io/autumntree
+
 * How to load and run in SBCL
 
 This project is developed with:
