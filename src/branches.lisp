@@ -9,7 +9,8 @@
   (:use :cl)
   ;; (:import-from :cffi
   ;; 		:foreign-enum-value)
-  (:export :prep-branches))
+  (:export :prep-branches
+	   ))
 
 (in-package :autumntree.branches)
 
@@ -218,27 +219,27 @@
 	   )
 
      ;; rectangles for leaves regions left
-     (list :rec
+     (list :region
 	   (floor (- base-x (* trunk-width 3.8)))
 	   (floor (- base-y trunk-height (* trunk-height 0.15)))
 	   (floor (* trunk-width 3.7))
 	   (floor (/ trunk-height 3))
 	   )
-     (list :rec
+     (list :region
 	   (floor (- base-x (* trunk-width 3.1)))
 	   (floor (- base-y trunk-height (* trunk-height 0.55)))
 	   (floor (* trunk-width 3))
 	   (floor (/ trunk-height 3))
 	   )
-     (list :rec
+     (list :region
 	   (floor (- base-x (* trunk-width 2.6)))
 	   (floor (- base-y trunk-height (* trunk-height 0.95)))
 	   (floor (* trunk-width 2.4))
 	   (floor (/ trunk-height 3.2))
 	   )
-
-     ;; top
-          (list :rec
+     
+   ;; top
+     (list :region
 	   (floor (- base-x (* trunk-width 0.8)))
 	   (floor (- base-y trunk-height (* trunk-height 1.05)))
 	   (floor (* trunk-width 2.8))
@@ -246,26 +247,24 @@
 	   )
 
      ;; recs right
-     (list :rec
+     (list :region
 	   (floor (+ base-x (* trunk-width -0.1)))
 	   (floor (- base-y trunk-height (* trunk-height 0.1)))
 	   (floor (* trunk-width 2.35))
 	   (floor (/ trunk-height 3))
 	   )
-     (list :rec
+     (list :region
 	   (floor (+ base-x (* trunk-width 0.1)))
 	   (floor (- base-y trunk-height (* trunk-height 0.4)))
 	   (floor (* trunk-width 1.8))
 	   (floor (/ trunk-height 4))
 	   )
-     (list :rec
+     (list :region
 	   (floor (+ base-x (* trunk-width -0.1)))
 	   (floor (- base-y trunk-height (* trunk-height 0.8)))
 	   (floor (* trunk-width 2.35))
 	   (floor (/ trunk-height 3))
 	   )
-
-
-     
-     )    
+     )
     ))
+

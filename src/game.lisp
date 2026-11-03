@@ -48,12 +48,14 @@
 				  ground-height
 				  screen-width
 				  screen-height))
+	 (regions (remove-if-not (lambda (e) (equal (first e) :region)) branches))
 	 (leaves (prep-leaves (/ (- screen-width (* tree-width 0.8)) 2.0)
 			      (coerce (+ border halfborder) 'single-float)
 			      (coerce (* tree-width 0.87) 'single-float) 
 			      (/ tree-height 1.5)
-			      400
-			      (/ screen-width 2))))
+			      1500
+			      (/ screen-width 2)
+			      regions)))
     
     (raylib:with-window ("Autumn Tree" (screen-width screen-height))
       (let* ((screen-center (raylib:make-vector2
@@ -128,8 +130,8 @@
 		     ))
 	      )				; loop
 	) 
-      )
-    ))
+    )
+  )
 
 (defun draw-trunk-and-branches (branches color)
 ;  (break)
