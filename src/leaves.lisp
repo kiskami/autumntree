@@ -17,7 +17,8 @@
 	   :leave-height
 	   :leave-color
 	   :leave-rot
-	   :leave-state)
+	   :leave-state
+	   :find-poked-leaves)
   )
 
 (in-package :autumntree.leaves)
@@ -28,7 +29,7 @@
 			      (raylib:make-color :r 149 :g 50 :b 64 :a 255) ; velvet
 			      (raylib:make-color :r 254 :g 153 :b 52 :a 255) ; deep saffron
 			      (raylib:make-color :r 253 :g 199 :b 38 :a 255) ; gold rush
-			      )) 
+			      ))
 
 (defstruct leave
   (centerX 0.0 :type single-float)
@@ -102,3 +103,24 @@
      (< x rx2)
      (< y ry2)))
   )
+
+(defun find-poked-leaves (mousepos leaves)
+  (let ((result '())
+	(mx (raylib:vector2-x mousepos))
+	(my (raylib:vector2-y mousepos)))
+    (dotimes (i (length leaves))
+      (let* ((l (aref leaves i))
+	     (w (leave-width l))
+	     (h (leave-height l))
+	     (x (leave-centerX l))
+	     (y (leave-centerY l))
+	     (diff (min (/ w 2) (/ h 2))))
+	(when (and
+	       (< mx (- x diff))
+	       (> mx (+ x diff))
+	       (< my (- y diff))
+	       (> my (+ y diff))
+	       )
+	  (push l result)
+	  )))
+    result))

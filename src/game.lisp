@@ -15,7 +15,8 @@
   (:import-from :autumntree.branches
 		:prep-branches)
   (:import-from :leaves
-		:prep-leaves)
+		:prep-leaves
+		:find-poked-leaves)
   (:export :main))
 
 (in-package :autumntree)
@@ -99,11 +100,11 @@
 		   (if (raylib:is-cursor-hidden)
 		       (raylib:show-cursor)
 		       (raylib:hide-cursor)))
-
 		 
 		 (let ((mousepos (raylib:get-mouse-position)))
 		   (when (raylib:is-mouse-button-pressed raylib::+mouse-left-button+)
-		     (poke mousepos))
+		     ;; (format t "poked~%")
+		     (poke mousepos leaves))
 
 		   (raylib:with-drawing
 		     (raylib:clear-background color-raywhite)
@@ -195,5 +196,13 @@
 		      c)
     ))
 
-(defun poke (mousepos)
-  )
+(defun poke (mousepos leaves)
+  (let ((poked-leaves (find-poked-leaves mousepos leaves)))
+    (when poked-leaves
+;;      (break)
+      (dolist (l poked-leaves)
+	(case (leaves:leave-state l)
+	  (:created
+	   (setf (leaves:leave-state l) :falling))
+	  )))
+    ))
