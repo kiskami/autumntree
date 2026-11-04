@@ -53,10 +53,18 @@
 			      (coerce (+ border halfborder) 'single-float)
 			      (coerce (* tree-width 0.87) 'single-float) 
 			      (/ tree-height 1.5)
-			      1500
+			      (multiple-value-bind (a b c d e year) (get-decoded-time)
+				(declare (ignore a b c d e))
+				year)
 			      (/ screen-width 2)
 			      regions)))
-    
+
+    ;; 2 - full screen
+    ;; 32 - msaa 4x
+    ;; 64 - vsync
+;;    (raylib:set-config-flags 2)
+    (raylib:set-target-fps 60)
+
     (raylib:with-window ("Autumn Tree" (screen-width screen-height))
       (let* ((screen-center (raylib:make-vector2
 			     :x (/ screen-width 2.0)
@@ -75,13 +83,14 @@
 	     (sky-color faded-sky-blue)
 	     (trunk-color color-dark-brown)
 	     (text-color color-white))
-	
-	(raylib:set-target-fps 30)	; conservative value
+
 	(raylib:hide-cursor)
 	(loop :until (raylib:window-should-close)
 	      :do
-		 (incf (raylib:camera-2d-zoom camera) (* (raylib:get-mouse-wheel-move) 0.05))
-		 (setf (raylib:camera-2d-zoom camera) (raylib:clamp (raylib:camera-2d-zoom camera) 0.1 3.0))
+		 (let ((wheel (raylib:get-mouse-wheel-move)))
+		   (when (not (= wheel 0))
+		     (incf (raylib:camera-2d-zoom camera) (* wheel 0.1))
+		     (setf (raylib:camera-2d-zoom camera) (raylib:clamp (raylib:camera-2d-zoom camera) 0.1 3.0))))
 		 (when (raylib:is-key-pressed #.(foreign-enum-value 'raylib:keyboard-key :r))
                    (setf (raylib:camera-2d-zoom camera) 1.0
 			 (raylib:camera-2d-rotation camera) 0.0))
@@ -91,7 +100,11 @@
 		       (raylib:show-cursor)
 		       (raylib:hide-cursor)))
 
+		 
 		 (let ((mousepos (raylib:get-mouse-position)))
+		   (when (raylib:is-mouse-button-pressed raylib::+mouse-left-button+)
+		     (poke mousepos))
+
 		   (raylib:with-drawing
 		     (raylib:clear-background color-raywhite)
 		     (draw-ground border (- draw-height ground-height) ground-height draw-width ground-color)
@@ -127,9 +140,9 @@
 				       (- screen-height halfborder (/ fontsize 2))
 				       fontsize
 				       color-dark-gray))
-		     ))
-	      )				; loop
-	) 
+		   ))
+	)				; loop
+      ) 
     )
   )
 
@@ -144,16 +157,17 @@
 )
 
 (defun draw-leaves (leaves)
-  (dolist (l leaves)
-    ;; centerx centery width height color &optional (rot 0.0)
-    (deltoidlocal
-     (leaves:leave-centerX l)
-     (leaves:leave-centerY l)
-     (leaves:leave-width l)
-     (leaves:leave-height l)
-     (leaves:leave-color l)
-     (leaves:leave-rot l)
-     )))
+  (dotimes (i (length leaves))
+    (let ((l (aref leaves i)))
+      ;; centerx centery width height color &optional (rot 0.0)
+      (deltoidlocal
+       (leaves:leave-centerX l)
+       (leaves:leave-centerY l)
+       (leaves:leave-width l)
+       (leaves:leave-height l)
+       (leaves:leave-color l)
+       (leaves:leave-rot l)
+       ))))
 
 (defun draw-ground (b y gh dw c)
   (raylib:draw-rectangle b y dw (+ b gh) c)
@@ -180,3 +194,6 @@
 		      fontsize
 		      c)
     ))
+
+(defun poke (mousepos)
+  )

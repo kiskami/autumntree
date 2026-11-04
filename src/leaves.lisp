@@ -47,28 +47,31 @@
 	 ;; the last color in +leafes-colors+ is at least 50%
 	 (gold-ratio (+ 50 (random 48)))
 	 
-	 (result '()))
-      (loop until (= (length result) count)
-	  do
-		(let ((x (+ canopy-x (random canopy-width)))
-		      (y (+ canopy-y (random canopy-height)))
-		      )
-		  (if (in-regions x y regions)
-		    (let ((angle (coerce (* raylib:+deg2rad+ (+ 10 (random 55))) 'single-float))) 
-		      (push
-		       (make-leave :centerX x
-				   :centerY y
-				   :width width
-				   :height height
-				   :rot (if (> x halfx)
-					    angle
-					    (* -1 angle))
-				   :color (leaf-color gold-ratio)
-				   )
-		       result))
-		    ;(break)
-		    ))
-	  )
+	 (result (make-array count :element-type (type-of (make-leave)))))
+      (loop
+	:with i = 0
+	:until (= i count)
+	:do
+	   (let ((x (+ canopy-x (random canopy-width)))
+		 (y (+ canopy-y (random canopy-height)))
+		 )
+	     (if (in-regions x y regions)
+		 (let ((angle (coerce (* raylib:+deg2rad+ (+ 10 (random 55))) 'single-float))) 
+		   (setf (aref result i)
+			 (make-leave :centerX x
+				     :centerY y
+				     :width width
+				     :height height
+				     :rot (if (> x halfx)
+					      angle
+					      (* -1 angle))
+				     :color (leaf-color gold-ratio)
+				     )
+			 )
+		   (setf i (1+ i)))
+		 ;;(break)
+		 ))
+	)
     result))
 
 (defun leaf-color (gold-ratio)
@@ -82,7 +85,7 @@
     c))
 
 (defun in-regions (x y regions)
-					;  (break)
+  ;;  (break)
   (some
    (lambda (r) (in-region x y (cdr r)))
    regions))
