@@ -23,6 +23,7 @@
 
 (defun main (&optional args)
   (declare (ignore args))
+  (setf *random-state* (make-random-state t))
   (let* ((screen-width 1280)
 	 (screen-height 1024)
 	 (color-skyblue (raylib:make-color :r 102 :g 191 :b 255 :a 255))
@@ -63,10 +64,10 @@
     ;; 2 - full screen
     ;; 32 - msaa 4x
     ;; 64 - vsync
-;;    (raylib:set-config-flags 64)
-
+    ;;    (raylib:set-config-flags 64)
+    
     (raylib:with-window ("Autumn Tree" (screen-width screen-height))
-;;      (raylib:set-target-fps 120)
+      ;;      (raylib:set-target-fps 120)
       (let* ((screen-center (raylib:make-vector2
 			     :x (/ screen-width 2.0)
 			     :y (/ screen-height 2.0)))
@@ -145,7 +146,7 @@
 					 (- screen-height halfborder (/ fontsize 2))
 					 fontsize
 					 color-dark-gray)
-		       ) ; with-drawing
+		       )		; with-drawing
 		     )
 		   ))
 	)				; loop
