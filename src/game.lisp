@@ -57,7 +57,9 @@
 			      (/ tree-height 1.5)
 			      (multiple-value-bind (a b c d e year) (get-decoded-time)
 				(declare (ignore a b c d e))
-				year)
+				;year
+				20
+				)
 			      (/ screen-width 2)
 			      regions)))
 
@@ -84,7 +86,8 @@
 	     (ground-color color-brown)
 	     (sky-color faded-sky-blue)
 	     (text-color color-white)
-	     (trunk-color '(76 63 47 255)))
+	     (trunk-color '(76 63 47 255))
+	     (dt 0.0))
 
 	(raylib:hide-cursor)
 	(loop :until (raylib:window-should-close)
@@ -107,8 +110,12 @@
 		     ;; (format t "poked~%")
 		     (poke mousepos leaves))
 
+		   (setf dt (+ dt (raylib:get-frame-time)))		   
+		   (when (> dt 0.033)
+		       (update-leaves leaves (- draw-height ground-height border) border dt)
+		       (setf dt (- dt 0.033)))
+		   
 		   (sb-sys:without-gcing
-
 		     (raylib:with-drawing
 		       (raylib:clear-background color-raywhite)
 		       (draw-ground border (- draw-height ground-height) ground-height draw-width ground-color)
@@ -165,17 +172,6 @@
 )
 
 (defun draw-leaves (leaves)
-  ;; (dotimes (i (length leaves))
-  ;;   (let ((l (aref leaves i)))
-  ;;     ;; centerx centery width height color &optional (rot 0.0)
-  ;;     (deltoidlocal
-  ;;      (leaves:leave-centerX l)
-  ;;      (leaves:leave-centerY l)
-  ;;      (leaves:leave-width l)
-  ;;      (leaves:leave-height l)
-  ;;      (leaves:leave-color l)
-  ;;      (leaves:leave-rot l)
-  ;;      )))
   (deltoid-batch leaves)
   )
 
@@ -207,11 +203,34 @@
 
 (defun poke (mousepos leaves)
   (let ((poked-leaves (find-poked-leaves mousepos leaves)))
+;;    (break)
     (when poked-leaves
-;;      (break)
+;;      (format t "poked ~d leaves~%" (length poked-leaves))
       (dolist (l poked-leaves)
 	(case (leaves:leave-state l)
 	  (:created
+;;	   (break)
 	   (setf (leaves:leave-state l) :falling))
+	  (:falling
+	   )
 	  )))
+    ))
+
+(defun update-leaves (leaves ground-y rest-height dt)
+;;  (format t " u")
+  (dotimes (i (length leaves))
+    (let* ((l (aref leaves i))
+	   (state (leaves:leave-state l)))
+;;      (break)
+;;      (format t " state: ~A " state)
+      (unless (equal (leaves:leave-state l) :created)
+	(case state
+	  ((:falling
+	    (format t " f ")
+	    (setf (leaves:leave-color l) (list 130 130 130 255))
+	    (when (> ground-y (leaves:leave-centerY l))
+	      (setf (leaves:leave-centerY l) (+ (leaves:leave-centerY l) (* dt 50))))
+	    ))
+	  ))
+      )
     ))
