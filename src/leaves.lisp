@@ -25,10 +25,10 @@
 
 ; https://www.schemecolor.com/fall-leaf.php
 (defconstant +leafes-colors+ (list
-			      (raylib:make-color :r 129 :g 140 :b 29 :a 255) ; dark wasabi
-			      (raylib:make-color :r 149 :g 50 :b 64 :a 255) ; velvet
-			      (raylib:make-color :r 254 :g 153 :b 52 :a 255) ; deep saffron
-			      (raylib:make-color :r 253 :g 199 :b 38 :a 255) ; gold rush
+			      '(129 140 29 255) ; dark wasabi
+			      '(149 50 64 255) ; velvet
+			      '(254 153 52 255) ; deep saffron
+			      '(253 199 38 255) ; gold rush
 			      ))
 
 (defstruct leave

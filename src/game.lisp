@@ -11,7 +11,7 @@
 		:foreign-enum-value)
   (:import-from :autumntree.util
 		:trapezlocal
-		:deltoidlocal)
+		:deltoid-batch)
   (:import-from :autumntree.branches
 		:prep-branches)
   (:import-from :leaves
@@ -27,7 +27,7 @@
 	 (screen-height 1024)
 	 (color-skyblue (raylib:make-color :r 102 :g 191 :b 255 :a 255))
 	 (color-brown (raylib:make-color :r 127 :g 106 :b 79 :a 255))
-	 (color-dark-brown (raylib:make-color :r 76 :g 63 :b 47 :a 255))
+	 ;; (color-dark-brown (raylib:make-color :r 76 :g 63 :b 47 :a 255))
 	 (color-raywhite (raylib:make-color :r 245 :g 245 :b 245 :a 255))
 	 (color-white (raylib:make-color :r 255 :g 255 :b 255 :a 255))
 	 (color-green (raylib:make-color :r 0 :g 228 :b 48 :a 255))
@@ -63,10 +63,10 @@
     ;; 2 - full screen
     ;; 32 - msaa 4x
     ;; 64 - vsync
-;;    (raylib:set-config-flags 2)
-    (raylib:set-target-fps 60)
+;;    (raylib:set-config-flags 64)
 
     (raylib:with-window ("Autumn Tree" (screen-width screen-height))
+;;      (raylib:set-target-fps 120)
       (let* ((screen-center (raylib:make-vector2
 			     :x (/ screen-width 2.0)
 			     :y (/ screen-height 2.0)))
@@ -82,8 +82,8 @@
 
 	     (ground-color color-brown)
 	     (sky-color faded-sky-blue)
-	     (trunk-color color-dark-brown)
-	     (text-color color-white))
+	     (text-color color-white)
+	     (trunk-color '(76 63 47 255)))
 
 	(raylib:hide-cursor)
 	(loop :until (raylib:window-should-close)
@@ -106,41 +106,47 @@
 		     ;; (format t "poked~%")
 		     (poke mousepos leaves))
 
-		   (raylib:with-drawing
-		     (raylib:clear-background color-raywhite)
-		     (draw-ground border (- draw-height ground-height) ground-height draw-width ground-color)
-		     (draw-sky border sky-height draw-width sky-color)
+		   (sb-sys:without-gcing
 
-		     (draw-trunk-and-branches branches trunk-color)
+		     (raylib:with-drawing
+		       (raylib:clear-background color-raywhite)
+		       (draw-ground border (- draw-height ground-height) ground-height draw-width ground-color)
+		       (draw-sky border sky-height draw-width sky-color)
 
-		     (draw-leaves leaves)
-		     
-		     (raylib:draw-circle-v mousepos 5.0 color-green)
-		     (unless (raylib:is-cursor-hidden)
-		       (raylib:draw-text (format nil "(~a ~a)"
-						 (raylib:vector2-x mousepos)
-						 (raylib:vector2-y mousepos))
+		       (draw-trunk-and-branches branches trunk-color)
+
+		       (draw-leaves leaves)
+		      
+		       (raylib:draw-circle-v mousepos 5.0 color-green)
+		       (unless (raylib:is-cursor-hidden)
+			 (raylib:draw-text (format nil "(~a ~a)"
+						   (raylib:vector2-x mousepos)
+						   (raylib:vector2-y mousepos))
+					   halfborder
+					   halfborder
+					   fontsize
+					   color-gray)
+			 ;; (raylib:draw-text (format nil "fps: ~D"
+			 ;; 				 (raylib:get-fps))
+			 ;; 			 (/ screen-width 2)
+			 ;; 			 halfborder
+			 ;; 			 fontsize
+			 ;; 			 color-gray)
+		         (raylib:draw-fps (/ screen-width 2) (floor (/ halfborder 2)))
+		         )
+		      
+		       (print-info (floor (raylib:vector2-x screen-center))
+				   (- screen-height border (floor (/ ground-height 2)) border border)
+				   fontsize
+				   text-color)
+
+		       (raylib:draw-text "Autumn Tree - Copyright (c) 2026 kiskami"
 					 halfborder
-					 halfborder
+					 (- screen-height halfborder (/ fontsize 2))
 					 fontsize
-					 color-gray)
-		       (raylib:draw-text (format nil "fps: ~a"
-						 (raylib:get-fps))
-					 (/ screen-width 2)
-					 halfborder
-					 fontsize
-					 color-gray))
-		     
-		     (print-info (floor (raylib:vector2-x screen-center))
-				 (- screen-height border (floor (/ ground-height 2)) border border)
-				 fontsize
-				 text-color)
-
-		     (raylib:draw-text "Autumn Tree - Copyright (c) 2026 kiskami"
-				       halfborder
-				       (- screen-height halfborder (/ fontsize 2))
-				       fontsize
-				       color-dark-gray))
+					 color-dark-gray)
+		       ) ; with-drawing
+		     )
 		   ))
 	)				; loop
       ) 
@@ -158,17 +164,19 @@
 )
 
 (defun draw-leaves (leaves)
-  (dotimes (i (length leaves))
-    (let ((l (aref leaves i)))
-      ;; centerx centery width height color &optional (rot 0.0)
-      (deltoidlocal
-       (leaves:leave-centerX l)
-       (leaves:leave-centerY l)
-       (leaves:leave-width l)
-       (leaves:leave-height l)
-       (leaves:leave-color l)
-       (leaves:leave-rot l)
-       ))))
+  ;; (dotimes (i (length leaves))
+  ;;   (let ((l (aref leaves i)))
+  ;;     ;; centerx centery width height color &optional (rot 0.0)
+  ;;     (deltoidlocal
+  ;;      (leaves:leave-centerX l)
+  ;;      (leaves:leave-centerY l)
+  ;;      (leaves:leave-width l)
+  ;;      (leaves:leave-height l)
+  ;;      (leaves:leave-color l)
+  ;;      (leaves:leave-rot l)
+  ;;      )))
+  (deltoid-batch leaves)
+  )
 
 (defun draw-ground (b y gh dw c)
   (raylib:draw-rectangle b y dw (+ b gh) c)

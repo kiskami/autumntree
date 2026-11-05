@@ -12,4 +12,4 @@
 						   "leaves"))
 				     (:file "branches")
 				     (:file "leaves")
-				     (:file "util")))))
+				     (:file "util" :depends-on ("leaves"))))))
