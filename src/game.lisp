@@ -34,6 +34,7 @@
 	 (color-green (raylib:make-color :r 0 :g 228 :b 48 :a 255))
 	 (color-gray (raylib:make-color :r 130 :g 130 :b 130 :a 255))
 	 (color-dark-gray (raylib:make-color :r 80 :g 80 :b 80 :a 255))
+	 (color-blue (raylib:make-color :r 0 :g 121 :b 241 :a 255))
 
 	 (border 30)
 	 (halfborder (/ border 2))
@@ -58,7 +59,7 @@
 			      (multiple-value-bind (sec b c d e year) (get-decoded-time)
 				(declare (ignore b c d e))
 				;;1000
-				(floor (* year (/ (random 70) 100.0)))
+				(floor (* year (/ (+ 20 (random 80)) 100.0)))
 				;;20
 				)
 			      (/ screen-width 2)
@@ -112,12 +113,12 @@
 		 (let ((mousepos (raylib:get-mouse-position)))
 		   (when (raylib:is-mouse-button-pressed raylib::+mouse-left-button+)
 		     ;; (format t "poked~%")
-		     (poke mousepos leaves))
+		     (poke mousepos leaves (- draw-height ground-height) (* 2 border)))
 
 		   (unless game-won
 		     (setf dt (+ dt (raylib:get-frame-time)))		   
 		     (when (> dt 0.033)
-		       (setf game-won (update-leaves leaves (- draw-height ground-height) border dt))
+		       (setf game-won (update-leaves leaves dt))
 		       (when game-won
 			 (setf won-time (get-universal-time))
 			 (format t "game won in ~D secs~%" (- won-time start-time))
@@ -135,7 +136,7 @@
 
 		       (draw-leaves leaves)
 		      
-		       (raylib:draw-circle-v mousepos 5.0 color-green)
+		       (raylib:draw-circle-v mousepos 5.0 color-blue)
 		       (unless (raylib:is-cursor-hidden)
 			 (raylib:draw-text (format nil "(~a ~a)"
 						   (raylib:vector2-x mousepos)
@@ -211,20 +212,21 @@
 		      c)
     ))
 
-(defun poke (mousepos leaves)
+(defun poke (mousepos leaves ground-y rest-height)
   (let ((poked-leaves (find-poked-leaves mousepos leaves)))
     (when poked-leaves
       (dolist (l poked-leaves)
 	(case (leaves:leave-state l)
 	  (:created
 	   (setf (leaves:leave-state l) :falling)
-	   (setf (leaves:leave-g l) (+ (leaves:leave-g l) (- (random 5) 2))))
+	   (setf (leaves:leave-g l) (+ (leaves:leave-g l) (- (random 5) 2)))
+	   (setf (leaves:leave-gy l) (+ ground-y (random rest-height))))
 	  (:falling
 	   )
 	  )))
     ))
 
-(defun update-leaves (leaves ground-y rest-height dt)
+(defun update-leaves (leaves dt)
   (let ((og 0))
     (dotimes (i (length leaves))
       (let* ((l (aref leaves i))
@@ -235,13 +237,19 @@
 	   )
 	  (:onground
 ;;	   (format t "g")
+	   (let* ((cl (leaves:leave-cl l))
+		  (dcl (max 0.0 (min 1.0 (+ cl (* dt (/ (random 8) 100.0)))))))
+	     (when (and (not (= 1.0 cl)) (<= dcl 1.0))
+	       (setf (leaves:leave-cl l) dcl)
+	       (setf (leaves:leave-gcolor l)
+		     (util:lerp-color (leaves:leave-color l) leaves:+grounded-color+ dcl))))
 	   (setf og (1+ og)))
 	 (:falling
 ;;	  (format t "f")
-	  (if (>= ground-y (leaves:leave-centerY l))
+	  (if (>= (leaves:leave-gy l) (leaves:leave-centerY l))
 	      (setf (leaves:leave-centerY l) (+ (leaves:leave-centerY l) (* dt (leaves:leave-g l))))
 	      (progn
-		(setf (leaves:leave-color l) (list 130 130 130 255))
+;;		(setf (leaves:leave-color l) (list 130 130 130 255))
 		(setf (leaves:leave-state l) :onground)
 ;;		(format t " og ")
 		))

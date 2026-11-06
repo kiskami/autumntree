@@ -7,10 +7,12 @@
 (in-package :cl-user)
 (defpackage autumntree.util
   (:use :cl)
-  (:nicknames "util")
+  (:nicknames :util)
   ;; (:import-from :cffi
   ;; 		:foreign-enum-value)
-  (:export :trapezlocal :deltoidbatch))
+  (:export :trapezlocal
+           :deltoid-batch
+	   :lerp-color))
 
 (in-package :autumntree.util)
 
@@ -96,7 +98,9 @@
 	   (cy (leaves:leave-centerY l))
 	   (w (leaves:leave-width l))
 	   (h (leaves:leave-height l))
-	   (c (leaves:leave-color l))
+	   (c (if (leaves:leave-gcolor l)
+		  (leaves:leave-gcolor l)
+		  (leaves:leave-color l)))
 	   (r (leaves:leave-rot l))
 	   )
       ;; centerx centery width height color &optional (rot 0.0)
@@ -115,3 +119,14 @@
       )
     )
   (rlgl:end))
+
+(defun lerp-color (color1 color2 cl)
+  (let ((cl_ (min 1.0 (max 0.0 cl))))
+    (list
+     (round (+ (first color1) (* cl_ (- (first color2) (first color1)))))
+     (round (+ (second color1) (* cl_ (- (second color2) (second color1)))))
+     (round (+ (third color1) (* cl_ (- (third color2) (third color1)))))
+     (fourth color2)
+     ;;(round (+ (fourth color1) (* cl_ (- (third color2) (fourth color1)))))
+     ))
+  )

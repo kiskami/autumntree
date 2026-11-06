@@ -19,18 +19,24 @@
 	   :leave-rot
 	   :leave-state
 	   :leave-g
-	   :find-poked-leaves)
+	   :leave-cl
+	   :leave-gcolor
+           :leave-gy
+	   :find-poked-leaves
+	   :+grounded-color+)
   )
 
 (in-package :autumntree.leaves)
 
 ; https://www.schemecolor.com/fall-leaf.php
-(defconstant +leafes-colors+ (list
+(defparameter +leafes-colors+ (list
 			      '(129 140 29 255) ; dark wasabi
 			      '(149 50 64 255) ; velvet
 			      '(254 153 52 255) ; deep saffron
 			      '(253 199 38 255) ; gold rush
 			      ))
+
+(defparameter +grounded-color+ '(177 121 0 255))
 
 (defstruct leave
   (centerX 0.0 :type single-float)
@@ -40,8 +46,12 @@
   (rot 0.0 :type single-float)
   color
   (state :created)
-  (g 15.0 :type single-float)
+  (g 15.0 :type single-float)		; falling speed
+  (cl 0.0 :type single-float)		; grounded color lerp time
+  gcolor                                ; actual grounded color
+  gy           ; groundY
   )
+   
 
 (defun prep-leaves (canopy-x canopy-y canopy-width canopy-height count halfx regions)
   (let* ((width (/ canopy-width 25.0))
