@@ -55,10 +55,11 @@
 			      (coerce (+ border halfborder) 'single-float)
 			      (coerce (* tree-width 0.87) 'single-float) 
 			      (/ tree-height 1.5)
-			      (multiple-value-bind (a b c d e year) (get-decoded-time)
-				(declare (ignore a b c d e))
-				;year
-				20
+			      (multiple-value-bind (sec b c d e year) (get-decoded-time)
+				(declare (ignore b c d e))
+				;;1000
+				(floor (* year (/ (random 70) 100.0)))
+				;;20
 				)
 			      (/ screen-width 2)
 			      regions)))
@@ -69,7 +70,7 @@
     ;;    (raylib:set-config-flags 64)
     
     (raylib:with-window ("Autumn Tree" (screen-width screen-height))
-      ;;      (raylib:set-target-fps 120)
+      (raylib:set-target-fps 60)
       (let* ((screen-center (raylib:make-vector2
 			     :x (/ screen-width 2.0)
 			     :y (/ screen-height 2.0)))
@@ -87,7 +88,10 @@
 	     (sky-color faded-sky-blue)
 	     (text-color color-white)
 	     (trunk-color '(76 63 47 255))
-	     (dt 0.0))
+	     (dt 0.0)
+	     (game-won nil)
+	     (start-time (get-universal-time))
+	     (won-time -1))
 
 	(raylib:hide-cursor)
 	(loop :until (raylib:window-should-close)
@@ -110,10 +114,16 @@
 		     ;; (format t "poked~%")
 		     (poke mousepos leaves))
 
-		   (setf dt (+ dt (raylib:get-frame-time)))		   
-		   (when (> dt 0.033)
-		       (update-leaves leaves (- draw-height ground-height border) border dt)
-		       (setf dt (- dt 0.033)))
+		   (unless game-won
+		     (setf dt (+ dt (raylib:get-frame-time)))		   
+		     (when (> dt 0.033)
+		       (setf game-won (update-leaves leaves (- draw-height ground-height) border dt))
+		       (when game-won
+			 (setf won-time (get-universal-time))
+			 (format t "game won in ~D secs~%" (- won-time start-time))
+			 )
+		       (setf dt (- dt 0.033))
+		       ))
 		   
 		   (sb-sys:without-gcing
 		     (raylib:with-drawing
@@ -155,9 +165,9 @@
 					 color-dark-gray)
 		       )		; with-drawing
 		     )
-		   ))
-	)				; loop
-      ) 
+		   )
+	      ) 			; loop
+	(format t "game played for ~D secs~%" (- (get-universal-time) start-time)))) 
     )
   )
 
@@ -203,34 +213,42 @@
 
 (defun poke (mousepos leaves)
   (let ((poked-leaves (find-poked-leaves mousepos leaves)))
-;;    (break)
     (when poked-leaves
-;;      (format t "poked ~d leaves~%" (length poked-leaves))
       (dolist (l poked-leaves)
 	(case (leaves:leave-state l)
 	  (:created
-;;	   (break)
-	   (setf (leaves:leave-state l) :falling))
+	   (setf (leaves:leave-state l) :falling)
+	   (setf (leaves:leave-g l) (+ (leaves:leave-g l) (- (random 5) 2))))
 	  (:falling
 	   )
 	  )))
     ))
 
 (defun update-leaves (leaves ground-y rest-height dt)
-;;  (format t " u")
-  (dotimes (i (length leaves))
-    (let* ((l (aref leaves i))
-	   (state (leaves:leave-state l)))
-;;      (break)
-;;      (format t " state: ~A " state)
-      (unless (equal (leaves:leave-state l) :created)
+  (let ((og 0))
+    (dotimes (i (length leaves))
+      (let* ((l (aref leaves i))
+	     (state (leaves:leave-state l)))
 	(case state
-	  ((:falling
-	    (format t " f ")
-	    (setf (leaves:leave-color l) (list 130 130 130 255))
-	    (when (> ground-y (leaves:leave-centerY l))
-	      (setf (leaves:leave-centerY l) (+ (leaves:leave-centerY l) (* dt 50))))
-	    ))
-	  ))
+	  (:created
+;;	   (format t "c")
+	   )
+	  (:onground
+;;	   (format t "g")
+	   (setf og (1+ og)))
+	 (:falling
+;;	  (format t "f")
+	  (if (>= ground-y (leaves:leave-centerY l))
+	      (setf (leaves:leave-centerY l) (+ (leaves:leave-centerY l) (* dt (leaves:leave-g l))))
+	      (progn
+		(setf (leaves:leave-color l) (list 130 130 130 255))
+		(setf (leaves:leave-state l) :onground)
+;;		(format t " og ")
+		))
+	  )
+	 )
+	)
       )
-    ))
+;;    (format t "~%")
+    (= og (length leaves)))
+  )

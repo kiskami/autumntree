@@ -18,6 +18,7 @@
 	   :leave-color
 	   :leave-rot
 	   :leave-state
+	   :leave-g
 	   :find-poked-leaves)
   )
 
@@ -39,6 +40,7 @@
   (rot 0.0 :type single-float)
   color
   (state :created)
+  (g 15.0 :type single-float)
   )
 
 (defun prep-leaves (canopy-x canopy-y canopy-width canopy-height count halfx regions)
@@ -49,30 +51,31 @@
 	 (gold-ratio (+ 50 (random 48)))
 	 
 	 (result (make-array count :element-type (type-of (make-leave)))))
-      (loop
-	:with i = 0
-	:until (= i count)
-	:do
-	   (let ((x (+ canopy-x (random canopy-width)))
-		 (y (+ canopy-y (random canopy-height)))
-		 )
-	     (if (in-regions x y regions)
-		 (let ((angle (coerce (* raylib:+deg2rad+ (+ 10 (random 55))) 'single-float))) 
-		   (setf (aref result i)
-			 (make-leave :centerX x
-				     :centerY y
-				     :width width
-				     :height height
-				     :rot (if (> x halfx)
-					      angle
-					      (* -1 angle))
-				     :color (leaf-color gold-ratio)
-				     )
-			 )
-		   (setf i (1+ i)))
-		 ;;(break)
-		 ))
-	)
+    (format t "there will be ~D leaves~%" count)
+    (loop
+      :with i = 0
+      :until (= i count)
+      :do
+	 (let ((x (+ canopy-x (random canopy-width)))
+	       (y (+ canopy-y (random canopy-height)))
+	       )
+	   (if (in-regions x y regions)
+	       (let ((angle (coerce (* raylib:+deg2rad+ (+ 10 (random 55))) 'single-float))) 
+		 (setf (aref result i)
+		       (make-leave :centerX x
+				   :centerY y
+				   :width width
+				   :height height
+				   :rot (if (> x halfx)
+					    angle
+					    (* -1 angle))
+				   :color (leaf-color gold-ratio)
+				   )
+		       )
+		 (setf i (1+ i)))
+	       ;;(break)
+	       ))
+      )
     result))
 
 (defun leaf-color (gold-ratio)
