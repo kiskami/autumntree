@@ -31,7 +31,7 @@
 	 ;; (color-dark-brown (raylib:make-color :r 76 :g 63 :b 47 :a 255))
 	 (color-raywhite (raylib:make-color :r 245 :g 245 :b 245 :a 255))
 	 (color-white (raylib:make-color :r 255 :g 255 :b 255 :a 255))
-	 (color-green (raylib:make-color :r 0 :g 228 :b 48 :a 255))
+	 (color-dark-green (raylib:make-color :r 0 :g 114 :b 64 :a 255))
 	 (color-gray (raylib:make-color :r 130 :g 130 :b 130 :a 255))
 	 (color-dark-gray (raylib:make-color :r 80 :g 80 :b 80 :a 255))
 	 (color-blue (raylib:make-color :r 0 :g 121 :b 241 :a 255))
@@ -58,9 +58,8 @@
 			      (/ tree-height 1.5)
 			      (multiple-value-bind (sec b c d e year) (get-decoded-time)
 				(declare (ignore b c d e))
-				;;1000
-				(floor (* year (/ (+ 20 (random 80)) 100.0)))
-				;;20
+				(floor (* year (/ (+ 40 (random sec)) 100.0)))
+;;				200
 				)
 			      (/ screen-width 2)
 			      regions)))
@@ -115,16 +114,18 @@
 		     ;; (format t "poked~%")
 		     (poke mousepos leaves (- draw-height ground-height) (* 2 border)))
 
-		   (unless game-won
-		     (setf dt (+ dt (raylib:get-frame-time)))		   
-		     (when (> dt 0.033)
-		       (setf game-won (update-leaves leaves dt))
-		       (when game-won
-			 (setf won-time (get-universal-time))
-			 (format t "game won in ~D secs~%" (- won-time start-time))
-			 )
-		       (setf dt (- dt 0.033))
-		       ))
+		   (setf dt (+ dt (raylib:get-frame-time)))		   
+		   (when (> dt 0.033)
+		     (if (not game-won)
+			 (progn
+			   (setf game-won (update-leaves leaves dt))
+			   (when game-won
+			     (setf won-time (get-universal-time))
+			     (format t "game won in ~D secs~%" (- won-time start-time))
+			     ))
+			 (update-leaves leaves (/ dt 2)))
+		     (setf dt (- dt 0.033))
+		     )
 		   
 		   (sb-sys:without-gcing
 		     (raylib:with-drawing
@@ -153,7 +154,13 @@
 			 ;; 			 color-gray)
 		         (raylib:draw-fps (/ screen-width 2) (floor (/ halfborder 2)))
 		         )
-		      
+
+		       (when game-won
+			 (print-gameend (- (/ screen-width 2) 420)
+					(- (/ screen-height 2) -170)
+					(* fontsize 2)
+					color-dark-green))
+		       
 		       (print-info (floor (raylib:vector2-x screen-center))
 				   (- screen-height border (floor (/ ground-height 2)) border border)
 				   fontsize
@@ -211,6 +218,13 @@
 		      fontsize
 		      c)
     ))
+
+(defun print-gameend (x y fontsize c)
+  (raylib:draw-text "T h i s   i s   t h e   E N D" (- x 100) y (* fontsize 2) c)
+  (raylib:draw-text "This game was created for the" (+ x 30) (+ y (* fontsize 2)) fontsize c)
+  (raylib:draw-text "Itch.io Autumn Lisp Game Jam 2026" (- x 90) (floor (+ y (* fontsize 3)))
+		    (floor (* fontsize 1.5)) c)
+  )
 
 (defun poke (mousepos leaves ground-y rest-height)
   (let ((poked-leaves (find-poked-leaves mousepos leaves)))
