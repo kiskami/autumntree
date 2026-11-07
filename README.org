@@ -11,9 +11,27 @@ https://kiskami.itch.io/autumntree
 
 * How to install and run the binaries
 
+The game package contains the source, licenses and the dynamic
+loadables necessary to run it on Linux and Windows.
+After unpacking you have two options
+
+** If you have Raylib and claw-raylib adapter installed
+
+Nice. You are already developing Raylib games with claw-raylib.
+You have the knowledge and necessary dynamic loadables and
+are able to run ~raylib~ *5.5* based apps.
+
+If you'r lazy and don't want to load and run from source,
+just run the ~autumntree~ binary and enjoy! ;)
+
+** If you don't have Raylib and claw-raylib installed
+
+I packed my versions of them (in the ~redist~ directory on Linux);
+hope that they work on your OS too. :)
+Just run the ~run.sh~ shell script and enjoy! ;)
 
 
-* How to load and run in SBCL
+* How to load and run from source
 
 This project is developed with:
 - ~SBCL~ - https://www.sbcl.org/
@@ -24,7 +42,7 @@ This project is developed with:
 ** Installing the dependencies
 
 1. Install *Raylib 5.5* on your OS
-2. Get claw-raylib and build it (The *prebuild 5.5* branch
+2. Get claw-raylib and build it (The *prebuilt 5.5* branch
    helps)
    - Get and install deps for quicklisp as local projects:
      *cffi-object, cffi-ops*
@@ -34,6 +52,19 @@ This project is developed with:
      the same place where your Raylib libs reside and can be
      loaded by the game/sbcl.
 3. Get this source and configure as quicklisp local project
+
+The following raylib and claw-raylib dynamic loadables should be
+loadable by sbcl or app:
+
+#+begin_src sh
+/usr/local/lib64$ ls -1 *ray*
+libraygui-adapter.so
+libraylib-adapter.so
+libraylib.so
+libraylib.so.5.5.0
+libraylib.so.550
+#+end_src
+
 
 ** Running
 
