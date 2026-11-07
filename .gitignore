@@ -4,3 +4,4 @@ tmp
 *.fasl
 redist
 *.zip
+*.dll

@@ -59,9 +59,10 @@ The following raylib and claw-raylib dynamic loadables should be
 loadable by sbcl or app:
 
 #+begin_src CLI
-/usr/local/lib64$ ls -1 *ray*
-libraylib-adapter.so
-libraylib.so
+  /usr/local/lib64$ ls -1 *ray*
+  libraylib-adapter.so
+  librlgl-adapter.so
+  libraylib.so
 #+end_src
 
 
