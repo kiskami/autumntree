@@ -28,7 +28,9 @@ just run the ~autumntree~ binary and enjoy! ;)
 
 I packed my versions of them (in the ~redist~ directory on Linux);
 hope that they work on your OS too. :)
-Just run the ~run.sh~ shell script and enjoy! ;)
+
+On Linux, ~chmod +x run.sh autumntree~ and run the ~run.sh~
+shell script and enjoy! ;)
 
 
 * How to load and run from source
@@ -56,7 +58,7 @@ This project is developed with:
 The following raylib and claw-raylib dynamic loadables should be
 loadable by sbcl or app:
 
-#+begin_src sh
+#+begin_src CLI
 /usr/local/lib64$ ls -1 *ray*
 libraylib-adapter.so
 libraylib.so
