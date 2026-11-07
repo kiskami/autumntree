@@ -58,11 +58,8 @@ loadable by sbcl or app:
 
 #+begin_src sh
 /usr/local/lib64$ ls -1 *ray*
-libraygui-adapter.so
 libraylib-adapter.so
 libraylib.so
-libraylib.so.5.5.0
-libraylib.so.550
 #+end_src
 
 
