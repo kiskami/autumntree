@@ -13,7 +13,18 @@ https://kiskami.itch.io/autumntree
 
 The game package contains the source, licenses and the dynamic
 loadables necessary to run it on Linux and Windows.
-After unpacking you have two options
+After unpacking you have two options:
+
+** If you don't have Raylib and claw-raylib installed
+
+I packed my versions of them (in the ~redist~ directory on Linux);
+hope that they work on your OS too. I use ~Slackware~ current and built
+and tested the Windows version in ~Wine~... :)
+
+On Linux, ~chmod +x run.sh autumntree~, run the ~run.sh~
+shell script and enjoy! ;)
+
+On Windows you run the ~autumntree.exe~.
 
 ** If you have Raylib and claw-raylib adapter installed
 
@@ -21,30 +32,24 @@ Nice. You are already developing Raylib games with claw-raylib.
 You have the knowledge and necessary dynamic loadables and
 are able to run ~raylib~ *5.5* based apps.
 
-If you'r lazy and don't want to load and run from source,
-just run the ~autumntree~ binary and enjoy! ;)
-
-** If you don't have Raylib and claw-raylib installed
-
-I packed my versions of them (in the ~redist~ directory on Linux);
-hope that they work on your OS too. :)
-
-On Linux, ~chmod +x run.sh autumntree~ and run the ~run.sh~
-shell script and enjoy! ;)
-
+*** Beware
+There is a bug (?) in claw-raylib, where if running on Windows (not
+on Linux) the lib is looking for a dll named ~libraylib.dll~ but
+there is only a ~raylib.dll~ - so you have to modify the foreign
+library name in the ~library.lisp~ file of claw-raylib.
 
 * How to load and run from source
 
 This project is developed with:
 - ~SBCL~ - https://www.sbcl.org/
-- ~Raylib~ - https://www.raylib.com/index.html
+- ~Raylib 5.5~ - https://www.raylib.com/index.html
 - ~claw-raylib~ - https://github.com/bohonghuang/claw-raylib
 - and of course ~Emacs + Slime~
 
 ** Installing the dependencies
 
 1. Install *Raylib 5.5* on your OS
-2. Get claw-raylib and build it (The *prebuilt 5.5* branch
+2. Get claw-raylib for 5.5 and build it (The *prebuilt 5.5* branch
    helps)
    - Get and install deps for quicklisp as local projects:
      *cffi-object, cffi-ops*
