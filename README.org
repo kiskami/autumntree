@@ -9,12 +9,17 @@ This is a simple game, where you poke the leaves on a tree.
 Please see the itch.io page for status, devlog and screenshots:
 https://kiskami.itch.io/autumntree
 
+* How to install and run the binaries
+
+
+
 * How to load and run in SBCL
 
 This project is developed with:
-- SBCL - https://www.sbcl.org/
-- Raylib - https://www.raylib.com/index.html
-- claw-raylib - https://github.com/bohonghuang/claw-raylib
+- ~SBCL~ - https://www.sbcl.org/
+- ~Raylib~ - https://www.raylib.com/index.html
+- ~claw-raylib~ - https://github.com/bohonghuang/claw-raylib
+- and of course ~Emacs + Slime~
 
 ** Installing the dependencies
 
@@ -53,3 +58,12 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, see
+<https://www.gnu.org/licenses/>.
+
+See ~LICENSE.txt~ for more info.
+
+Raylib and claw-raylib have different licenses, please see the
+~raylib-license.txt~ and ~claw-raylib-LICENSE.txt~ files for info.
