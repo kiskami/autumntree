@@ -12,7 +12,8 @@
   ;; 		:foreign-enum-value)
   (:export :trapezlocal
            :deltoid-batch
-	   :lerp-color))
+	   :lerp-color
+	   :float-nonzero-p))
 
 (in-package :autumntree.util)
 

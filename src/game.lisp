@@ -226,6 +226,8 @@
 		    (floor (* fontsize 1.5)) c)
   )
 
+(defparameter +bvec-init-factor+ 5.0)
+
 (defun poke (mousepos leaves ground-y rest-height)
   (let* ((mvl (multiple-value-list (find-poked-leaves mousepos leaves)))
 	 (poked-leaves (first mvl))
@@ -236,12 +238,28 @@
 	  (:created
 	   (setf (leaves:leave-state l) :falling)
 	   (setf (leaves:leave-g l) (+ (leaves:leave-g l) (- (random 5) 2)))
-	   (setf (leaves:leave-gy l) (+ ground-y (random rest-height))))
+	   (setf (leaves:leave-gy l) (+ ground-y (random rest-height)))
+	   ;;	   (break)
+	   (setf blown-leaves (remove l blown-leaves)))
 	  (:falling
 	   )
 	  )))
+    ;;    (break)
     (when blown-leaves
-      )
+      (dolist (l blown-leaves)
+	(case (leaves:leave-state l)
+	  (:falling
+	   (let ((diffx (- (leaves:leave-centerX l) (raylib:vector2-x mousepos)))
+		 (diffy (- (leaves:leave-centerY l) (raylib:vector2-y mousepos))))
+	     (setf (leaves:leave-bvec l)
+		   ;;'(20.0 5.0)
+		   (list  ;(* (/ 1 diffx) 150.0) (* (/ 1 diffy) 100.0)
+		    (* diffx +bvec-init-factor+) (* diffy +bvec-init-factor+)
+		    )
+		   )
+	     ;;	     (format t "b")
+	     )
+	   ))))
     ))
 
 (defun update-leaves (leaves dt)
@@ -265,7 +283,27 @@
 	 (:falling
 ;;	  (format t "f")
 	  (if (>= (leaves:leave-gy l) (leaves:leave-centerY l))
-	      (setf (leaves:leave-centerY l) (+ (leaves:leave-centerY l) (* dt (leaves:leave-g l))))
+	      (let* ((bvec (leaves:leave-bvec l))
+		     (bvx (first bvec))
+		     (bvy (second bvec)))
+		(when (or (util:float-nonzero-p bvx)
+			(util:float-nonzero-p bvy))
+		    ;; blown is prio
+		    (progn
+		      (setf (leaves:leave-centerX l) (+ (leaves:leave-centerX l) (* bvx dt 2.0)))
+		      (setf (leaves:leave-centerY l) (+ (leaves:leave-centerY l) (* bvy dt 2.0)))
+		      (setf (leaves:leave-bvec l) (list (if (< 0 bvx)
+							    (min 0.0 (- bvx (* dt 1.0)))
+							    (max 0.0 (+ bvx (* dt 1.0)))
+							    )
+							(if (< 0 bvy)
+							    (min 0.0 (- bvy (* dt 1.0)))
+							    (max 0.0 (+ bvy (* dt 1.0))))
+							))
+		      )
+		    )
+		(setf (leaves:leave-centerY l)
+		      (+ (leaves:leave-centerY l) (* dt (leaves:leave-g l)))))
 	      (progn
 ;;		(setf (leaves:leave-color l) (list 130 130 130 255))
 		(setf (leaves:leave-state l) :onground)

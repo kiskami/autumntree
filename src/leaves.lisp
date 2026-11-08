@@ -22,6 +22,7 @@
 	   :leave-cl
 	   :leave-gcolor
            :leave-gy
+	   :leave-bvec
 	   :find-poked-leaves
 	   :+grounded-color+)
   )
@@ -39,7 +40,7 @@
 (defparameter +grounded-color+ '(177 121 0 255))
 
 (defparameter +leave-aabb-ratio+ '(0.5 0.5))
-(defparameter +blown-radius2+ (* 2 10 10))
+(defparameter +blown-radius2+ (* 7.0 7 7 7))
 
 (defstruct leave
   (centerX 0.0 :type single-float)
