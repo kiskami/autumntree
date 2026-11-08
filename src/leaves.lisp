@@ -38,6 +38,9 @@
 
 (defparameter +grounded-color+ '(177 121 0 255))
 
+(defparameter +leave-aabb-ratio+ '(0.5 0.5))
+(defparameter +blown-radius2+ (* 2 10 10))
+
 (defstruct leave
   (centerX 0.0 :type single-float)
   (centerY 0.0 :type single-float)
@@ -49,7 +52,8 @@
   (g 15.0 :type single-float)		; falling speed
   (cl 0.0 :type single-float)		; grounded color lerp time
   gcolor                                ; actual grounded color
-  gy           ; groundY
+  gy					; groundY
+  (bvec '(0.0 0.0))			; blown vector
   )
    
 
@@ -118,22 +122,30 @@
   )
 
 (defun find-poked-leaves (mousepos leaves)
-  (let ((result '())
-	(mx (raylib:vector2-x mousepos))
-	(my (raylib:vector2-y mousepos)))
+  (let* ((result '())
+	 (bresult '())
+	 (mx (raylib:vector2-x mousepos))
+	(my (raylib:vector2-y mousepos))
+     )
     (dotimes (i (length leaves))
       (let* ((l (aref leaves i))
 	     (w (leave-width l))
 	     (h (leave-height l))
 	     (x (leave-centerX l))
 	     (y (leave-centerY l))
-	     (diff (min (/ w 2) (/ h 2))))
-	(when (and
-	       (> mx (- x diff))
-	       (< mx (+ x diff))
-	       (> my (- y diff))
-	       (< my (+ y diff))
-	       )
-	  (push l result)
-	  )))
-    result))
+	     (diffx (* w (first +leave-aabb-ratio+)))
+	     (diffy (* h (second +leave-aabb-ratio+)))
+	     (poked (and
+		     (> mx (- x diffx))
+		     (< mx (+ x diffx))
+		     (> my (- y diffy))
+		     (< my (+ y diffy))
+	       ))
+	     )
+	(when poked (push l result))
+	(let ((dx (- x mx))
+	      (dy (- y my)))
+	 (when (> +blown-radius2+
+		  (+ (* dx dx) (* dy dy)))
+	   (push l bresult)))))
+    (values result bresult)))

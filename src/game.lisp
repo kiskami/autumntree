@@ -227,7 +227,9 @@
   )
 
 (defun poke (mousepos leaves ground-y rest-height)
-  (let ((poked-leaves (find-poked-leaves mousepos leaves)))
+  (let* ((mvl (multiple-value-list (find-poked-leaves mousepos leaves)))
+	 (poked-leaves (first mvl))
+	 (blown-leaves (second mvl)))
     (when poked-leaves
       (dolist (l poked-leaves)
 	(case (leaves:leave-state l)
@@ -238,6 +240,8 @@
 	  (:falling
 	   )
 	  )))
+    (when blown-leaves
+      )
     ))
 
 (defun update-leaves (leaves dt)
