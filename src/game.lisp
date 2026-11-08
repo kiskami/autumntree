@@ -59,7 +59,7 @@
 			      (multiple-value-bind (sec b c d e year) (get-decoded-time)
 				(declare (ignore b c d e))
 				(floor (* year (/ (+ 40 (random sec)) 100.0)))
-;;				200
+;;				200			
 				)
 			      (/ screen-width 2)
 			      regions)))
@@ -71,6 +71,9 @@
     
     (raylib:with-window ("Autumn Tree" (screen-width screen-height))
       (raylib:set-target-fps 60)
+
+      (raylib:init-audio-device)
+      
       (let* ((screen-center (raylib:make-vector2
 			     :x (/ screen-width 2.0)
 			     :y (/ screen-height 2.0)))
@@ -91,11 +94,21 @@
 	     (dt 0.0)
 	     (game-won nil)
 	     (start-time (get-universal-time))
-	     (won-time -1))
+	     (won-time -1)
+	     (mousicstream (raylib:load-music-stream "Leaf-in-the-Wind_chosic_com.ogg"))
+	     (blowsound (raylib:load-sound "blow.wav"))
+	     (volume 0.6))
 
+	(raylib:set-master-volume volume)
+
+	(raylib:play-music-stream mousicstream)
+	(raylib:set-music-pan mousicstream 1.0)
+	(raylib:set-music-volume mousicstream volume)
+	(raylib:set-sound-volume blowsound volume)
+	
 	(raylib:hide-cursor)
 	(loop :until (raylib:window-should-close)
-	      :do
+	      :do	 
 		 (let ((wheel (raylib:get-mouse-wheel-move)))
 		   (when (not (= wheel 0))
 		     (incf (raylib:camera-2d-zoom camera) (* wheel 0.1))
@@ -108,10 +121,13 @@
 		   (if (raylib:is-cursor-hidden)
 		       (raylib:show-cursor)
 		       (raylib:hide-cursor)))
+
+		 (raylib:update-music-stream mousicstream)
 		 
 		 (let ((mousepos (raylib:get-mouse-position)))
 		   (when (raylib:is-mouse-button-pressed raylib::+mouse-left-button+)
 		     ;; (format t "poked~%")
+		     (raylib:play-sound blowsound)
 		     (poke mousepos leaves (- draw-height ground-height) (* 2 border)))
 
 		   (setf dt (+ dt (raylib:get-frame-time)))		   
@@ -159,7 +175,13 @@
 			 (print-gameend (- (/ screen-width 2) 420)
 					(- (/ screen-height 2) -170)
 					(* fontsize 2)
-					color-dark-green))
+					color-dark-green)
+			 (setf volume (max 0.0 (- volume (* dt 0.05))))
+			 (raylib:set-music-volume mousicstream volume)
+			 )
+
+		       (when (not (util:float-nonzero-p volume))
+			 (raylib:stop-music-stream mousicstream))
 		       
 		       (print-info (floor (raylib:vector2-x screen-center))
 				   (- screen-height border (floor (/ ground-height 2)) border border)
@@ -175,6 +197,10 @@
 		     )
 		   )
 	      ) 			; loop
+	(raylib:unload-music-stream mousicstream)
+	(raylib:unload-sound blowsound)
+	(raylib:close-audio-device)
+	;;	(raylib:close-window)
 	(format t "game played for ~D secs~%" (- (get-universal-time) start-time)))) 
     )
   )
@@ -293,12 +319,12 @@
 		      (setf (leaves:leave-centerX l) (+ (leaves:leave-centerX l) (* bvx dt 2.0)))
 		      (setf (leaves:leave-centerY l) (+ (leaves:leave-centerY l) (* bvy dt 2.0)))
 		      (setf (leaves:leave-bvec l) (list (if (< 0 bvx)
-							    (min 0.0 (- bvx (* dt 1.0)))
-							    (max 0.0 (+ bvx (* dt 1.0)))
+							    (min 0.0 (- bvx (* dt 0.5)))
+							    (max 0.0 (+ bvx (* dt 0.5)))
 							    )
 							(if (< 0 bvy)
-							    (min 0.0 (- bvy (* dt 1.0)))
-							    (max 0.0 (+ bvy (* dt 1.0))))
+							    (min 0.0 (- bvy (* dt 0.5)))
+							    (max 0.0 (+ bvy (* dt 0.5))))
 							))
 		      )
 		    )

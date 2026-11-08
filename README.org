@@ -81,7 +81,7 @@ Load it with asdf or quicklisp and run the ~main~ function:
   CL-USER> (autumntree:main)
 #+end_src
    
-* License
+* Licenses
 
 Copyright (c) 2026 kiskami, Zalaegerszeg, Hungary
 
@@ -103,3 +103,14 @@ See ~LICENSE.txt~ for more info.
 
 Raylib and claw-raylib have different licenses, please see the
 ~raylib-license.txt~ and ~claw-raylib-LICENSE.txt~ files for info.
+
+Music and sound:
+
+blow.wav by me.
+
+Leaf in the Wind by Matthew C. Wright | https://www.matthewcwright.com/
+Music promoted by https://www.chosic.com/free-music/all/
+
+Creative Commons CC BY 4.0
+https://creativecommons.org/licenses/by/4.0/
+
