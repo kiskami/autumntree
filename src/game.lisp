@@ -17,6 +17,10 @@
   (:import-from :leaves
 		:prep-leaves
 		:find-poked-leaves)
+  (:import-from :autumntree.others
+		:init-snail
+		:update-snail
+   :draw-snail)
   (:export :main))
 
 (in-package :autumntree)
@@ -102,9 +106,13 @@
 	(raylib:set-master-volume volume)
 
 	(raylib:play-music-stream mousicstream)
-	(raylib:set-music-pan mousicstream 1.0)
+	(raylib:set-music-pan mousicstream 0.5)
 	(raylib:set-music-volume mousicstream volume)
 	(raylib:set-sound-volume blowsound volume)
+
+	(others:init-snail (coerce (* border 2) 'single-float)
+			   (coerce (- draw-height ground-height) 'single-float)
+			   (coerce (+ draw-width border 10) 'single-float))
 	
 	(raylib:hide-cursor)
 	(loop :until (raylib:window-should-close)
@@ -142,6 +150,8 @@
 			 (update-leaves leaves (/ dt 2)))
 		     (setf dt (- dt 0.033))
 		     )
+
+		   (update-snail dt)
 		   
 		   (sb-sys:without-gcing
 		     (raylib:with-drawing
@@ -151,8 +161,11 @@
 
 		       (draw-trunk-and-branches branches trunk-color)
 
+		       (draw-others color-dark-gray
+				    color-gray)
+		       
 		       (draw-leaves leaves)
-		      
+		       
 		       (raylib:draw-circle-v mousepos 5.0 color-blue)
 		       (unless (raylib:is-cursor-hidden)
 			 (raylib:draw-text (format nil "(~a ~a)"
@@ -342,3 +355,6 @@
 ;;    (format t "~%")
     (= og (length leaves)))
   )
+
+(defun draw-others (c c2)
+  (others:draw-snail c c2))

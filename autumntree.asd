@@ -9,7 +9,9 @@
 			:components ((:file "game"
 				      :depends-on ("util"
 						   "branches"
-						   "leaves"))
+						   "leaves"
+						   "others"))
 				     (:file "branches")
 				     (:file "leaves")
+				     (:file "others" :depends-on ("util"))
 				     (:file "util" :depends-on ("leaves"))))))

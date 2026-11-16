@@ -13,7 +13,8 @@
   (:export :trapezlocal
            :deltoid-batch
 	   :lerp-color
-	   :float-nonzero-p))
+	   :float-nonzero-p
+	   ))
 
 (in-package :autumntree.util)
 
