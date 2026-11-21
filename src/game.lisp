@@ -20,7 +20,8 @@
   (:import-from :autumntree.others
 		:init-snail
 		:update-snail
-   :draw-snail)
+		:poke-snail
+		:draw-snail)
   (:export :main))
 
 (in-package :autumntree)
@@ -270,14 +271,16 @@
 (defun poke (mousepos leaves ground-y rest-height)
   (let* ((mvl (multiple-value-list (find-poked-leaves mousepos leaves)))
 	 (poked-leaves (first mvl))
-	 (blown-leaves (second mvl)))
+	 (blown-leaves (second mvl))
+	 (mx (raylib:vector2-x mousepos))
+	 (my (raylib:vector2-y mousepos)))
     (when poked-leaves
       (dolist (l poked-leaves)
 	(case (leaves:leave-state l)
 	  (:created
 	   (setf (leaves:leave-state l) :falling)
 	   (setf (leaves:leave-g l) (+ (leaves:leave-g l) (- (random 5) 2)))
-	   (setf (leaves:leave-gy l) (+ ground-y (random rest-height)))
+	   (setf (leaves:leave-gy l) (+ ground-y 5 (random rest-height)))
 	   ;;	   (break)
 	   (setf blown-leaves (remove l blown-leaves)))
 	  (:falling
@@ -288,8 +291,8 @@
       (dolist (l blown-leaves)
 	(case (leaves:leave-state l)
 	  (:falling
-	   (let ((diffx (- (leaves:leave-centerX l) (raylib:vector2-x mousepos)))
-		 (diffy (- (leaves:leave-centerY l) (raylib:vector2-y mousepos))))
+	   (let ((diffx (- (leaves:leave-centerX l) mx))
+		 (diffy (- (leaves:leave-centerY l) my)))
 	     (setf (leaves:leave-bvec l)
 		   ;;'(20.0 5.0)
 		   (list  ;(* (/ 1 diffx) 150.0) (* (/ 1 diffy) 100.0)
@@ -299,6 +302,7 @@
 	     ;;	     (format t "b")
 	     )
 	   ))))
+    (poke-snail mx my)
     ))
 
 (defun update-leaves (leaves dt)
